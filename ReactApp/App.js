@@ -7,10 +7,11 @@ import {Provider} from 'react-redux';
 import tasks from './reducers/tasks/taskReducer';
 import thunk from 'redux-thunk';
 import {combineReducers} from 'redux';
+import {crashReporter, loggingMiddleware} from "./middlewares/loggingMiddleware";
 
 const reducers = combineReducers({tasks});
 
-const store = createStore(reducers, applyMiddleware(thunk));
+const store = createStore(reducers, applyMiddleware(thunk, crashReporter, loggingMiddleware));
 
 export default class App extends React.Component {
     state = {

@@ -5,7 +5,6 @@ export const initialState = {
 };
 
 export default function tasksReducer(state = initialState, action) {
-    console.log("action", action);
     switch (action.type) {
         case FETCH_TASKS_SUCCESS: {
             return Object.assign({}, state, {

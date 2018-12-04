@@ -6,9 +6,12 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NewTaskScreen from '../screens/NewTaskScreen'
 import MyTasksScreen from '../screens/MyTasksScreen'
+import MapTasksScreen from '../screens/MapTasksScreen'
+import TaskDetailsScreen from "../screens/TaskDetailsScreen";
 
 const HomeStack = createStackNavigator({
     Home: HomeScreen,
+    Details: TaskDetailsScreen,
 });
 
 HomeStack.navigationOptions = {
@@ -53,8 +56,23 @@ MyTasksStack.navigationOptions = {
     ),
 };
 
+const MapTasksStack = createStackNavigator({
+   MapTasks: MapTasksScreen,
+});
+
+MapTasksStack.navigationOptions = {
+    tabBarLabel: 'Map',
+    tabBarIcon: ({focused}) => (
+        <TabBarIcon
+            focused={focused}
+            name={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
+        />
+    ),
+};
+
 export default createBottomTabNavigator({
     HomeStack,
+    MapTasksStack,
     NewTaskStack,
     MyTasksStack,
 });

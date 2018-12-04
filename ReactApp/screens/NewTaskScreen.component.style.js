@@ -6,4 +6,14 @@ export default StyleSheet.create({
         paddingTop: 15,
         backgroundColor: '#fff',
     },
+    map: {
+        alignSelf: 'stretch',
+        height: 250
+    },
+    button: {
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10,
+        marginTop: 10
+    }
 });

@@ -1,0 +1,1 @@
+export const HOST_IP = 'http://192.168.2.103:3000';

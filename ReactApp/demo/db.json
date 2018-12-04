@@ -1,34 +1,80 @@
 {
-  "tasks" : [
+  "tasks": [
     {
       "id": 1,
       "title": "zadanie 1",
       "owner": "User qwe",
-      "reward": 10
+      "reward": 10,
+      "description": "",
+      "latlng": {
+        "latitude": 51.1131868,
+        "longitude": 17.0753582
+      }
     },
     {
       "id": 2,
       "title": "zadanie 2",
       "owner": "User abc",
-      "reward": 20
+      "reward": 20,
+      "description": "",
+      "latlng": {
+        "latitude": 50.8131868,
+        "longitude": 16.9753582
+      }
     },
     {
       "id": 3,
       "title": "zadanie 3",
       "owner": "Rere",
-      "reward": 15
+      "reward": 15,
+      "description": "",
+      "latlng": {
+        "latitude": 50.9131868,
+        "longitude": 17.4753582
+      }
     },
     {
       "id": 4,
       "title": "zadanie 4",
       "owner": "Test",
-      "reward": 30
+      "reward": 30,
+      "description": "",
+      "latlng": {
+        "latitude": 51.0131868,
+        "longitude": 17.3753582
+      }
     },
     {
       "id": 5,
       "title": "zadanie 5",
       "owner": "Ala",
-      "reward": 1
+      "reward": 1,
+      "latlng": {
+        "latitude": 51.3131868,
+        "longitude": 17.2753582
+      }
+    },
+    {
+      "id": 6,
+      "title": "Create",
+      "owner": "User",
+      "reward": 66,
+      "description": "",
+      "latlng": {
+        "latitude": 51.2131868,
+        "longitude": 17.1753582
+      }
+    },
+    {
+      "id": 5738223,
+      "title": "Matowe",
+      "owner": "User",
+      "reward": 55,
+      "description": "testowy opis",
+      "latlng": {
+        "latitude": 51.10958719024434,
+        "longitude": 17.032895274460312
+      }
     }
   ]
 }

@@ -52,8 +52,6 @@ export class HomeScreen extends Component {
     };
 
     searchFilterFunction = text => {
-        console.log("tasks", this.props.tasks);
-        console.log("allTasks", this.props.allTasks);
         const newData = this.props.allTasks.filter(item => {
             const itemData = `${item.title.toUpperCase()} ${item.owner.toUpperCase()}}`;
             const textData = text.toUpperCase();
@@ -99,7 +97,8 @@ export class HomeScreen extends Component {
     }
 
     handleDetails = (item) => {
-        ToastAndroid.showWithGravity(item.title + ", " + item.owner + ", " + item.reward, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        //ToastAndroid.showWithGravity(item.title + ", " + item.owner + ", " + item.reward, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        this.props.navigation.navigate('Details', {task: item})
     };
 
     handlePullRefresh = () => {
@@ -110,7 +109,6 @@ export class HomeScreen extends Component {
 HomeScreen.defaultProps = {loading: true, tasks: []};
 
 const mapProps = (state) => {
-    console.log("onReceive", state);
     return ({
         tasks: state.tasks.tasks,
         allTasks: state.tasks.allTasks,
