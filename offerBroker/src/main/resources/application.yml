@@ -1,3 +1,27 @@
 spring:
   application:
     name: offer-broker
+  liquibase:
+    enabled: true
+    # IntelliJ highlights this because reasons, I guess
+    # but it doesn't work other ways
+    change-log: classpath:db/changelog.yml
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+
+
+---
+
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:postgresql://localhost:5431/rebu
+    username: rebu
+    password: rebu123

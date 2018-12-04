@@ -1,0 +1,15 @@
+databaseChangeLog:
+- preconditions:
+    dbms: postgresql
+    runningAs: rebu
+- changeSet:
+    id: 1
+    author: Marcin Regulski <maarcin.regulski@gmail.com>
+    sqlFile:
+      path: db/001_create_user.sql
+- changeSet:
+    id: 2
+    author: Marcin Regulski <maarcin.regulski@gmail.com>
+    sqlFile:
+      path: db/002_create_task_offer.sql
+
