@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {View, Dimensions, FlatList, ActivityIndicator} from 'react-native';
+import {ActivityIndicator, AsyncStorage, Dimensions, FlatList, View} from 'react-native';
 import {List, ListItem, SearchBar} from 'react-native-elements';
-import * as ToastAndroid from "react-native/Libraries/Components/ToastAndroid/ToastAndroid.android";
 import getAllTasks from "../actions/getAllTasks";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
@@ -20,10 +19,22 @@ export class HomeScreen extends Component {
         header: null,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        const jwt = await AsyncStorage.getItem('id_token');
+        const user = await AsyncStorage.getItem('user_info');
+
+        console.log(jwt)
+        console.log(user)
+
+        this.setState({
+            user: user,
+            jwt: jwt
+        })
         console.log("did mount");
-        this.props.getAllTasks();
+        this.props.getAllTasks(jwt);
+
     }
+
 
     renderSeparator = () => {
         return (
@@ -71,7 +82,7 @@ export class HomeScreen extends Component {
         }
 
         return (
-            <List >
+            <List>
                 <FlatList
                     data={this.props.tasks}
                     contentContainerStyle={{borderTopWidth: 0, paddingBottom: 20}}
@@ -79,7 +90,7 @@ export class HomeScreen extends Component {
                         <ListItem
                             roundAvatar
                             title={item.title}
-                            rightTitle={item.progression.status}
+                            rightTitle={item.status}
                             subtitle={item.owner}
                             containerStyle={{borderBottomWidth: 0}}
                             onPress={() => this.handleDetails(item)}
@@ -106,7 +117,7 @@ export class HomeScreen extends Component {
     handleDetails = (item) => {
         //ToastAndroid.showWithGravity(item.title + ", " + item.owner + ", " + item.reward, ToastAndroid.SHORT, ToastAndroid.CENTER);
         this.props.showTask(item);
-        this.props.navigation.navigate('Details', {user: this.props.user.user})
+        this.props.navigation.navigate('Details', {user: this.state.user})
     };
 
     handlePullRefresh = () => {

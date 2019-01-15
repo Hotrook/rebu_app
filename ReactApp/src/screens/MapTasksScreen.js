@@ -52,17 +52,25 @@ export class MapTasksScreen extends React.Component {
                             style={{alignSelf: 'stretch', height: Dimensions.get('window').height}}
                             region={this.state.mapRegion}
                             onRegionChange={this.handleMapRegionChange}>
-                            {this.props.tasks.map(this.renderMarkers)}
+                            {this.props.tasks.filter(this.latitudeDefined).map(this.renderMarkers)}
                         </MapView>
                 }
             </View>
         )
     }
 
+    latitudeDefined = (task) => {
+        if (task.latitude) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     renderMarkers = (task) => {
         return <MapView.Marker
             key={task.id}
-            coordinate={task.latlng}>
+            coordinate={{latitude: task.latitude, longitude: task.longitude}}>
             <Icon name={'help'}/>
             <MapView.Callout tooltip={true} onPress={() => this.onMarkerClicked(task)}>
                 <View style={styles.markerContainer}>

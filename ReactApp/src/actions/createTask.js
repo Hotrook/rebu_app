@@ -1,6 +1,6 @@
 import axios from "axios";
 import {CREATION_TASK_SUCCESS} from "../constants/actionTypes";
-import {HOST_IP} from "../constants/WebConfig";
+import {BACK_IP} from "../constants/WebConfig";
 import getAllTasks from "./getAllTasks";
 import fetchUser from "./auth/fetchUser";
 
@@ -10,9 +10,17 @@ function creationSuccess() {
     }
 }
 
-export default function createTask(task, navigator, user) {
+export default function createTask(task, navigator, user, jwt) {
+    console.log('create task for user', user);
+    const headers = {
+        headers: {
+            'Authorization': 'Bearer ' + jwt,
+            'Accept': 'application/json'
+        }
+    }
+
     return (dispatch) => {
-        axios.post(`${HOST_IP}/tasks`, task)
+        axios.post(`${BACK_IP}/api/tasks`, task, headers)
             .then(() => dispatch(creationSuccess()))
             .then(() => dispatch(getAllTasks()))
             .then(() => dispatch(fetchUser(user)))

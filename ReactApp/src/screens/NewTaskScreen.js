@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, ScrollView, Text, TouchableHighlight, View} from 'react-native';
+import {ActivityIndicator, AsyncStorage, ScrollView, Text, TouchableHighlight, View} from 'react-native';
 import t from 'tcomb-form-native';
 import styles from './NewTaskScreen.component.style.js'
 import createTask from "../actions/createTask";
@@ -28,8 +28,20 @@ export class NewTaskScreen extends React.Component {
         createTask: PropTypes.func,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getLocationAsync();
+
+        const jwt = await AsyncStorage.getItem('id_token');
+        const user = await AsyncStorage.getItem('user_info');
+
+        console.log(jwt)
+        console.log(user)
+
+        this.setState({
+            user: user,
+            jwt: jwt
+        })
+
     }
 
     getLocationAsync = async () => {
@@ -79,27 +91,21 @@ export class NewTaskScreen extends React.Component {
         event.preventDefault();
         let value = this._form.getValue();
         if (value) { // if validation fails, value will be null
-            this.postNewTask(this.props.user.user, value);
+            this.postNewTask(this.state.user, value);
         }
     };
 
     postNewTask = (user, value) => {
         console.log("validation passed", user, value);
-        //TODO: change id
         this.props.createTask({
-            id: Math.floor(Math.random() * 10000000),
             title: value.title,
             owner: user,
             reward: value.reward,
             description: value.description,
-            latlng: {
-                latitude: this.state.markerCoords.latitude,
-                longitude: this.state.markerCoords.longitude
-            },
-            progression: {
-                status: 'free',
-            }
-        }, this.props.navigation, user);
+            latitude: this.state.markerCoords.latitude,
+            longitude: this.state.markerCoords.longitude,
+            status: 'FREE',
+        }, this.props.navigation, user, this.state.jwt);
         this.setState({
             value: null,
             markerCoords: null
@@ -133,6 +139,7 @@ const mapProps = state => {
         }
     })
 };
+
 
 const mapDispatchToProps = {
     createTask,

@@ -1,6 +1,6 @@
 import axios from "axios";
 import {TASK_ACTION_SUCCESS} from "../constants/actionTypes";
-import {HOST_IP} from "../constants/WebConfig";
+import {BACK_IP, HOST_IP} from "../constants/WebConfig";
 import getAllTasks from "./getAllTasks";
 
 function assignRejection(task) {
@@ -10,14 +10,22 @@ function assignRejection(task) {
     }
 }
 
-export default function rejectCompletion(task) {
+export default function rejectCompletion(task, jwt) {
     return (dispatch) => {
-        task.progression.status = 'started';
+        task.status = 'STARTED';
 
-        axios.put(`${HOST_IP}/tasks/${task.id}`, task)
+
+        const headers = {
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
+        }
+
+        axios.put(`${BACK_IP}/api/tasks`, task, headers)
             .then(response => response.data)
             .then((data) => dispatch(assignRejection(data)))
-            .then(() => dispatch(getAllTasks()))
+            .then(() => dispatch(getAllTasks(jwt)))
             .catch(reason => console.log('rejectCompletion action failed: ', reason))
     }
 };

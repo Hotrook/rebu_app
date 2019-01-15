@@ -1,4 +1,5 @@
 import {FETCH_USER_SUCCESS} from "../../constants/actionTypes";
+import {AsyncStorage} from 'react-native';
 
 export const initialState = {
     user: null,
@@ -8,6 +9,12 @@ export const initialState = {
 export default function userReducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_USER_SUCCESS: {
+            if (action.user.sessionId) {
+                AsyncStorage.getItem('user_info', action.user.sessionId);
+            }
+            if (action.user.id) {
+                AsyncStorage.setItem('userId', action.user.id);
+            }
             return Object.assign({}, state, {
                 ...state,
                 user: action.user,

@@ -1,6 +1,6 @@
 import axios from "axios";
 import {FETCH_TASKS_SUCCESS} from "../constants/actionTypes";
-import {HOST_IP} from "../constants/WebConfig";
+import {BACK_IP, HOST_IP} from "../constants/WebConfig";
 
 function fetchTasksSuccess(data) {
     return {
@@ -10,9 +10,15 @@ function fetchTasksSuccess(data) {
     }
 }
 
-export default function getAllTasks() {
+export default function getAllTasks(jwt) {
+    const headers = {
+        headers: {
+            'Authorization': 'Bearer ' + jwt,
+            'Accept': 'application/json'
+        }
+    }
     return (dispatch) => {
-        axios.get(`${HOST_IP}/tasks`)
+        axios.get(`${BACK_IP}/api/tasks`, headers)
             .then(response => response.data)
             .then(data => dispatch(fetchTasksSuccess(data)))
             .catch(reason => console.log('getALlTasks action failed: ', reason))

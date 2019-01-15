@@ -15,7 +15,7 @@ export class SignInScreen extends Component {
         title: 'Please sign in',
     };
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             login: '',
@@ -35,10 +35,10 @@ export class SignInScreen extends Component {
         console.log(login)
         console.log(password)
 
-        this.setState({ error: '', loading: true });
+        this.setState({error: '', loading: true});
 
         // NOTE Post to HTTPS only in production
-        axios.post(`${BACK_IP}/api/authenticate`,{
+        axios.post(`${BACK_IP}/api/authenticate`, {
             username: login,
             password: password
         },)
@@ -76,8 +76,9 @@ export class SignInScreen extends Component {
 
     _signInAsync = async (response) => {
         console.debug(`Saving token: ${response.data.id_token}`)
-        deviceStorage.saveKey("id_token", response.data.id_token);
-        if(response){
+        deviceStorage.saveKey("id_token", response.data.id_token)
+        this.fetchUserInfo()
+        if (response) {
             // this.props.fetchUser(value.user); TODO
             this.props.navigation.navigate('Main');
         }
@@ -90,6 +91,26 @@ export class SignInScreen extends Component {
     onFormChange = value => {
         this.setState({value})
     };
+
+    async fetchUserInfo() {
+        const jwt = await AsyncStorage.getItem('id_token');
+        const headers = {
+            'Authorization': 'Bearer ' + jwt,
+            'Accept': 'application/json'
+        };
+        axios({
+            method: 'GET',
+            url: `${BACK_IP}/api/account`,
+            headers: headers,
+        })
+            .then(async response => {
+                console.log(`Received response: ${response.data.login}`)
+                await AsyncStorage.setItem("user_info", response.data.login);
+            })
+            .catch((error) => {
+                console.error(error)
+            });
+    }
 }
 
 const mapDispatchToProps = {

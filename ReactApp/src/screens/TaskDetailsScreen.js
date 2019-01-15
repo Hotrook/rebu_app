@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Text} from "react-native-elements";
-import {ActivityIndicator, ScrollView, View} from "react-native";
+import {ActivityIndicator, AsyncStorage, ScrollView, View} from "react-native";
 import styles from './TaskDetailsScreen.component.style';
 import {connect} from "react-redux";
 import completeTask from "../actions/completeTask";
@@ -22,6 +22,20 @@ export class TaskDetailsScreen extends React.Component {
         title: 'Task Details',
     };
 
+    async componentDidMount() {
+
+        const jwt = await AsyncStorage.getItem('id_token');
+        const user = await AsyncStorage.getItem('user_info');
+
+        console.log(jwt)
+        console.log(user)
+
+        this.setState({
+            user: user,
+            jwt: jwt
+        })
+    }
+
     render() {
         if (this.props.task !== null) {
             return (
@@ -36,13 +50,13 @@ export class TaskDetailsScreen extends React.Component {
                         <Text style={styles.infoBox}>Owner: {this.props.task.owner}</Text>
                         <Text style={styles.infoBox}>Description: {this.props.task.description}</Text>
                         <Text style={styles.infoBox}>Reward: {this.props.task.reward}</Text>
-                        <Text style={styles.infoBox}>Status: {this.props.task.progression.status}</Text>
+                        <Text style={styles.infoBox}>Status: {this.props.task.status}</Text>
                         {this.addAssigneeIfExists()}
                         <MapView
                             liteMode
                             initialRegion={{
-                                latitude: this.props.task.latlng.latitude,
-                                longitude: this.props.task.latlng.longitude,
+                                latitude: this.props.task.latitude,
+                                longitude: this.props.task.longitude,
                                 latitudeDelta: 0.0922,
                                 longitudeDelta: 0.0421,
                             }}
@@ -51,7 +65,10 @@ export class TaskDetailsScreen extends React.Component {
                             loadingIndicatorColor="#666666"
                             loadingBackgroundColor="#eeeeee">
                             <MapView.Marker
-                                coordinate={this.props.task.latlng}
+                                coordinate={{
+                                    latitude: this.props.task.latitude ? this.props.task.latitude : 0.0,
+                                    longitude:  this.props.task.longitude ? this.props.task.longitude : 0.0,
+                                }}
                             />
                         </MapView>
                     </View>
@@ -66,8 +83,8 @@ export class TaskDetailsScreen extends React.Component {
     }
 
     addAssigneeIfExists = () => {
-        if (this.props.task.progression.status !== 'free') {
-            return <Text style={styles.infoBox}>Assignee: {this.props.task.progression.assignee}</Text>
+        if (this.props.task.status !== 'free') {
+            return <Text style={styles.infoBox}>Assignee: {this.props.task.assignee}</Text>
         }
     };
 
@@ -80,7 +97,7 @@ export class TaskDetailsScreen extends React.Component {
     };
 
     renderTaskOwnerActions = () => {
-        let disabled = this.props.task.progression.status !== 'review';
+        let disabled = this.props.task.status !== 'REVIEW';
 
         return (
             <View style={styles.actionsBar}>
@@ -91,9 +108,9 @@ export class TaskDetailsScreen extends React.Component {
     };
 
     renderStandardTaskActions = () => {
-        if (this.props.task.progression.status === 'free' ||
-            this.props.task.progression.assignee === this.state.user) {
-            let assignDisabled = this.props.task.progression.status !== 'free';
+        if (this.props.task.status === 'FREE' ||
+            this.props.task.assignee === this.state.user) {
+            let assignDisabled = this.props.task.status !== 'FREE';
             return (
                 <View style={styles.actionsBar}>
                     <Button disabled={assignDisabled} title={'Assign to me'} onPress={this.assignTask}/>
@@ -104,30 +121,30 @@ export class TaskDetailsScreen extends React.Component {
     };
 
     addRequestCompletionButtonIfNeeded = () => {
-        if (this.props.task.progression.status === 'started' &&
-            this.props.task.progression.assignee === this.state.user) {
+        if (this.props.task.status === 'STARTED' &&
+            this.props.task.assignee === this.state.user) {
             return <Button title={'Request Completion'} onPress={this.requestCompletion}/>
         }
     };
 
     completeTask = () => {
         console.log('Task complete: ', this.props.task.title);
-        this.props.completeTask(this.props.task);
+        this.props.completeTask(this.props.task, this.state.jwt);
     };
 
     assignTask = () => {
         console.log('Assign task to me: ', this.state.user, this.props.task.title);
-        this.props.assignTask(this.props.task, this.state.user);
+        this.props.assignTask(this.props.task, this.state.user, this.state.jwt);
     };
 
     requestCompletion = () => {
         console.log('Request task completion: ', this.state.user, this.props.task.title);
-        this.props.requestCompletion(this.props.task);
+        this.props.requestCompletion(this.props.task, this.state.jwt);
     };
 
     rejectCompletion = () => {
         console.log('Rejected task completion: ', this.state.user, this.props.task.title);
-        this.props.rejectCompletion(this.props.task);
+        this.props.rejectCompletion(this.props.task, this.state.jwt);
     }
 }
 

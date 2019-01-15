@@ -27,9 +27,20 @@ export class MyTasksScreen extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
+    componentWillMount() {
+    }
+
+    async componentDidMount() {
+
+        const jwt = await AsyncStorage.getItem('id_token');
+        const user = await AsyncStorage.getItem('user_info');
+
+        console.log(jwt)
+        console.log(user)
+
         this.props.navigation.setParams({_signOutAsync: this._signOutAsync});
-        this.props.getAllTasksForUser(this.props.user.user);
+        this.props.getAllTasksForUser(user, jwt);
+
     }
 
     render() {
@@ -43,7 +54,7 @@ export class MyTasksScreen extends React.Component {
 
         return (
             <View>
-                <Text style={styles.balanceLabel}>Balance: {this.props.user.balance}</Text>
+                <Text style={styles.balanceLabel}>Balance: {this.props.balance}</Text>
                 <List
                     automaticallyAdjustContentInsets={false}>
                     <FlatList
@@ -130,10 +141,7 @@ const mapProps = (state) => {
         tasks: state.userTasks.tasks,
         allTasks: state.userTasks.allTasks,
         loading: false,
-        user: {
-            user: state.user.user,
-            balance: state.user.balance,
-        }
+        balance: 0
     })
 };
 

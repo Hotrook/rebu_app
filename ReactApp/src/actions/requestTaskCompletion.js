@@ -1,6 +1,6 @@
 import axios from "axios";
 import {TASK_ACTION_SUCCESS} from "../constants/actionTypes";
-import {HOST_IP} from "../constants/WebConfig";
+import {BACK_IP, HOST_IP} from "../constants/WebConfig";
 import getAllTasks from "./getAllTasks";
 
 function requestCompleted(task) {
@@ -10,14 +10,21 @@ function requestCompleted(task) {
     }
 }
 
-export default function requestCompletion(task) {
+export default function requestCompletion(task, jwt) {
     return (dispatch) => {
-        task.progression.status = 'review';
+        task.status = 'REVIEW';
 
-        axios.put(`${HOST_IP}/tasks/${task.id}`, task)
+        const headers = {
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
+        }
+
+        axios.put(`${BACK_IP}/api/tasks`, task, headers)
             .then(response => response.data)
             .then((data) => dispatch(requestCompleted(data)))
-            .then(() => dispatch(getAllTasks()))
+            .then(() => dispatch(getAllTasks(jwt)))
             .catch(reason => console.log('requestCompletion action failed: ', reason))
     }
 };

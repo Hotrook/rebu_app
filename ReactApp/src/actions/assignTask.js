@@ -1,6 +1,6 @@
 import axios from "axios";
 import {TASK_ACTION_SUCCESS} from "../constants/actionTypes";
-import {HOST_IP} from "../constants/WebConfig";
+import {BACK_IP, HOST_IP} from "../constants/WebConfig";
 import getAllTasks from "./getAllTasks";
 
 function assignSuccess(task) {
@@ -10,17 +10,22 @@ function assignSuccess(task) {
     }
 }
 
-export default function assignTask(task, user) {
+export default function assignTask(task, user, jwt) {
     return (dispatch) => {
-        task.progression = {
-            status: 'started',
-            assignee: user,
-        };
+        task.status = 'STARTED'
+        task.assignee = user
 
-        axios.put(`${HOST_IP}/tasks/${task.id}`, task)
+        const headers = {
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
+        }
+
+        axios.put(`${BACK_IP}/api/tasks`, task, headers)
             .then(response => response.data)
             .then((data) => dispatch(assignSuccess(data)))
-            .then(() => dispatch(getAllTasks()))
+            .then(() => dispatch(getAllTasks(jwt)))
             .catch(reason => console.log('assignTask action failed: ', reason))
     }
 };
