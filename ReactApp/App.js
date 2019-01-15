@@ -11,18 +11,34 @@ import taskDetailed from './reducers/tasks/taskDetailedReducer';
 import thunk from 'redux-thunk';
 import {combineReducers} from 'redux';
 import {crashReporter, loggingMiddleware} from "./middlewares/loggingMiddleware";
+import deviceStorage from './services/deviceStorage';
 
 const reducers = combineReducers({tasks, userTasks, user, taskDetailed});
 
 const store = createStore(reducers, applyMiddleware(thunk, crashReporter, loggingMiddleware));
 
 export default class App extends React.Component {
-    state = {
-        isLoadingComplete: false,
-    };
+    constructor() {
+        super();
+        this.state = {
+            jwt: '',
+            loading: false
+        }
+        this.newJWT = this.newJWT.bind(this);
+        this.deleteJWT = deviceStorage.deleteJWT.bind(this);
+        this.loadJWT = deviceStorage.loadJWT.bind(this);
+        this.loadJWT();
+    }
+
+    newJWT(jwt){
+        this.setState({
+            jwt: jwt
+        });
+    }
 
     render() {
-        if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+        if (this.state.loading && !this.props.skipLoadingScreen) {
+
             return (
                 <AppLoading
                     startAsync={this._loadResourcesAsync}
@@ -30,6 +46,13 @@ export default class App extends React.Component {
                     onFinish={this._handleFinishLoading}
                 />
             );
+        } else if (!this.state.jwt) {
+            return (
+                <AppLoading
+                    startAsync={this._loadResourcesAsync}
+                    onError={this._handleLoadingError}
+                    onFinish={this._handleFinishLoading}
+                />            );
         } else {
             return (
                 <Provider store={store}>
@@ -45,15 +68,15 @@ export default class App extends React.Component {
     _loadResourcesAsync = async () => {
         return Promise.all([
             Asset.loadAsync([
-                require('./assets/images/robot-dev.png'),
-                require('./assets/images/robot-prod.png'),
+                require('../assets/images/robot-dev.png'),
+                require('../assets/images/robot-prod.png'),
             ]),
             Font.loadAsync({
                 // This is the font that we are using for our tab bar
                 ...Icon.Ionicons.font,
                 // We include SpaceMono because we use it in HomeScreen.js. Feel free
                 // to remove this if you are not using it in your app
-                'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+                'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
             }),
         ]);
     };
@@ -65,7 +88,7 @@ export default class App extends React.Component {
     };
 
     _handleFinishLoading = () => {
-        this.setState({isLoadingComplete: true});
+        this.setState({loading: false});
     };
 }
 
