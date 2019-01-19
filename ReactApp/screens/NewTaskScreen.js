@@ -51,7 +51,9 @@ export class NewTaskScreen extends React.Component {
                 <ScrollView style={styles.container}>
                     <Form type={Task}
                           options={options}
-                          ref="form"/>
+                          ref={c => this._form = c}
+                          value={this.state.value}
+                          onChange={this.onFormChange}/>
                     <MapView
                         style={styles.map}
                         initialRegion={this.state.mapRegion}
@@ -72,8 +74,9 @@ export class NewTaskScreen extends React.Component {
         }
     }
 
-    handleSubmit = () => {
-        let value = this.refs.form.getValue();
+    handleSubmit = (event) => {
+        event.preventDefault();
+        let value = this._form.getValue();
         if (value) { // if validation fails, value will be null
             console.log("validation passed", value);
             //TODO: change id
@@ -87,7 +90,11 @@ export class NewTaskScreen extends React.Component {
                     latitude: this.state.markerCoords.latitude,
                     longitude: this.state.markerCoords.longitude
                 }
-            });
+            }, this.props.navigation);
+            this.setState({
+                value: null,
+                markerCoords: null
+            })
         }
     };
 
@@ -95,6 +102,10 @@ export class NewTaskScreen extends React.Component {
         this.setState({
             markerCoords: event.nativeEvent.coordinate
         })
+    };
+
+    onFormChange = value => {
+        this.setState({value})
     };
 
     createMarkerIfExists = () => {
@@ -120,6 +131,30 @@ const Task = t.struct({
     reward: t.Number
 });
 
+const formStyles = {
+    ...Form.stylesheet,
+    formGroup: {
+        normal: {
+            marginBottom: 10
+        },
+    },
+    controlLabel: {
+        normal: {
+            color: 'blue',
+            fontSize: 18,
+            marginBottom: 7,
+            fontWeight: '600'
+        },
+        // the style applied when a validation error occours
+        error: {
+            color: 'red',
+            fontSize: 18,
+            marginBottom: 7,
+            fontWeight: '600'
+        }
+    }
+};
+
 const options = {
     auto: 'placeholders',
     fields: {
@@ -137,5 +172,6 @@ const options = {
             label: 'Reward',
             error: 'Please set the reward for your task.'
         }
-    }
+    },
+    stylesheet: formStyles,
 };

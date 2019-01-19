@@ -75,6 +75,17 @@
         "latitude": 51.10958719024434,
         "longitude": 17.032895274460312
       }
+    },
+    {
+      "id": 2435856,
+      "title": "Test",
+      "owner": "User",
+      "reward": 33,
+      "description": "Lek",
+      "latlng": {
+        "latitude": 50.3285570051974,
+        "longitude": 16.662967018783092
+      }
     }
   ]
 }

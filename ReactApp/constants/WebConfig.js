@@ -1,1 +1,2 @@
-export const HOST_IP = 'http://192.168.2.103:3000';
+export const HOST_IP = 'http://192.168.1.17:3000';
+//set REACT_NATIVE_PACKAGER_HOSTNAME
