@@ -75,6 +75,61 @@
         "latitude": 51.10958719024434,
         "longitude": 17.032895274460312
       }
+    },
+    {
+      "id": 8154578,
+      "title": "Grę",
+      "owner": "Rere2",
+      "reward": 66,
+      "description": "Sk",
+      "latlng": {
+        "latitude": 50.29868117480095,
+        "longitude": 16.706730276346207
+      }
+    },
+    {
+      "id": 2063548,
+      "title": "Co",
+      "owner": "Rere2",
+      "reward": 1,
+      "description": "Dł",
+      "latlng": {
+        "latitude": 50.311673280205625,
+        "longitude": 16.60183545202017
+      }
+    },
+    {
+      "id": 6534051,
+      "title": "Asi",
+      "owner": "Rere",
+      "reward": 55,
+      "description": "Sk",
+      "latlng": {
+        "latitude": 50.29047884532453,
+        "longitude": 16.598486714065075
+      }
+    },
+    {
+      "id": 8112285,
+      "title": "Ej",
+      "owner": "Rere",
+      "reward": 1,
+      "description": "Cn",
+      "latlng": {
+        "latitude": 50.29994154583181,
+        "longitude": 16.583769768476483
+      }
+    },
+    {
+      "id": 7045013,
+      "title": "Duch",
+      "owner": "Rere",
+      "reward": 9,
+      "description": "Dł",
+      "latlng": {
+        "latitude": 50.29795427783713,
+        "longitude": 16.618148311972618
+      }
     }
   ]
 }

@@ -1,11 +1,10 @@
 import React from 'react';
-import {ExpoConfigView} from '@expo/samples';
 import {ActivityIndicator, AsyncStorage, Button, Dimensions, FlatList, View} from "react-native";
 import connect from "react-redux/es/connect/connect";
 import {List, ListItem, SearchBar} from "react-native-elements";
 import PropTypes from "prop-types";
 import getAllTasksForUser from "../actions/getAllTasksForUser";
-import updateTasksList from "../actions/updateTasksList";
+import updateTasksListForUser from "../actions/updateTasksListForUser";
 
 export class MyTasksScreen extends React.Component {
 
@@ -14,12 +13,12 @@ export class MyTasksScreen extends React.Component {
         allTasks: PropTypes.array,
         loading: PropTypes.bool,
         getAllTasksForUser: PropTypes.func,
-        updateTasksListForUser: PropTypes.func,
+        updateTasksList: PropTypes.func,
     };
 
-    static navigationOptions = ({navigation}) => ({
+    static navigationOptions = ({navigation, defaultHandler}) => ({
         headerRight: <Button title='Sign Out' onPress={() => navigation.state.params._signOutAsync()}/>,
-        headerTitle: 'My Tasks'
+        headerTitle: 'My Tasks',
     });
 
     constructor() {
@@ -30,12 +29,18 @@ export class MyTasksScreen extends React.Component {
     componentDidMount() {
         this.props.navigation.setParams({_signOutAsync: this._signOutAsync});
         this.retrieveUserInfo();
-        this.props.getAllTasksForUser(this.state.user);
     }
 
     retrieveUserInfo = async () => {
-        const userToken = await AsyncStorage.getItem('userToken');
-        this.setState({user: userToken})
+        try {
+            const value = await AsyncStorage.getItem('userToken');
+            if (value !== null) {
+                this.props.getAllTasksForUser(value);
+                this.setState({user: value})
+            }
+        } catch (error) {
+            console.log('Error on retrieving user token', error)
+        }
     };
 
     render() {
@@ -48,7 +53,7 @@ export class MyTasksScreen extends React.Component {
         }
 
         return (
-            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 10}}>
+            <List>
                 <FlatList
                     data={this.props.tasks}
                     renderItem={({item}) => (
@@ -110,7 +115,7 @@ export class MyTasksScreen extends React.Component {
             return itemData.indexOf(textData) > -1;
         });
 
-        this.props.updateTasksList(newData, this.props.allTasks);
+        this.props.updateTasksListForUser(newData, this.props.allTasks);
     };
 
     handlePullRefresh = () => {
@@ -121,14 +126,14 @@ export class MyTasksScreen extends React.Component {
 
 const mapProps = (state) => {
     return ({
-        tasks: state.tasks.tasks,
-        allTasks: state.tasks.allTasks,
+        tasks: state.userTasks.tasks,
+        allTasks: state.userTasks.allTasks,
         loading: false
     })
 };
 
 const mapDispatchToProps = {
-    getAllTasksForUser, updateTasksList
+    getAllTasksForUser, updateTasksListForUser
 };
 
 export default connect(mapProps, mapDispatchToProps)(MyTasksScreen);

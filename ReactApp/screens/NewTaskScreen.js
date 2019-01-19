@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Text, TouchableHighlight, ActivityIndicator, View} from 'react-native';
+import {ScrollView, Text, TouchableHighlight, ActivityIndicator, View, AsyncStorage} from 'react-native';
 import t from 'tcomb-form-native';
 import styles from './NewTaskScreen.component.style.js'
 import createTask from "../actions/createTask";
@@ -78,24 +78,28 @@ export class NewTaskScreen extends React.Component {
         event.preventDefault();
         let value = this._form.getValue();
         if (value) { // if validation fails, value will be null
-            console.log("validation passed", value);
-            //TODO: change id
-            this.props.createTask({
-                id: Math.floor(Math.random() * 10000000),
-                title: value.title,
-                owner: 'User',
-                reward: value.reward,
-                description: value.description,
-                latlng: {
-                    latitude: this.state.markerCoords.latitude,
-                    longitude: this.state.markerCoords.longitude
-                }
-            }, this.props.navigation);
-            this.setState({
-                value: null,
-                markerCoords: null
-            })
+            this.retrieveUserInfo().then((user) => this.postNewTask(user, value));
         }
+    };
+
+    postNewTask = (user, value) => {
+        console.log("validation passed", user, value);
+        //TODO: change id
+        this.props.createTask({
+            id: Math.floor(Math.random() * 10000000),
+            title: value.title,
+            owner: user,
+            reward: value.reward,
+            description: value.description,
+            latlng: {
+                latitude: this.state.markerCoords.latitude,
+                longitude: this.state.markerCoords.longitude
+            }
+        }, this.props.navigation);
+        this.setState({
+            value: null,
+            markerCoords: null
+        })
     };
 
     handleMapPressed = event => {
@@ -114,7 +118,19 @@ export class NewTaskScreen extends React.Component {
                 coordinate={this.state.markerCoords}
             />
         }
-    }
+    };
+
+    retrieveUserInfo = async () => {
+        try {
+            const value = await AsyncStorage.getItem('userToken');
+            if (value !== null) {
+                return value;
+            }
+        } catch (error) {
+            console.log('Error on retrieving user token', error)
+        }
+        return 'User';
+    };
 }
 
 const mapDispatchToProps = {

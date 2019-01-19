@@ -1,16 +1,17 @@
 import axios from "axios";
-import {FETCH_TASKS_SUCCESS} from "../constants/actionTypes";
+import {FETCH_USER_TASKS_SUCCESS} from "../constants/actionTypes";
 import {HOST_IP} from "../constants/WebConfig";
 
 function fetchTasksSuccess(data) {
     return {
-        type: FETCH_TASKS_SUCCESS,
+        type: FETCH_USER_TASKS_SUCCESS,
         tasks: data,
         allTasks: data,
     }
 }
 
 export default function getAllTasksForUser(user) {
+    console.log('get tasks for user', user);
     return (dispatch) => {
         axios.get(`${HOST_IP}/tasks`, {params: {owner: user}})
             .then(response => response.data)

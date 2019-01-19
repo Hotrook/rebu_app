@@ -72,9 +72,10 @@ export class HomeScreen extends Component {
         }
 
         return (
-            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 10}}>
+            <List >
                 <FlatList
                     data={this.props.tasks}
+                    contentContainerStyle={{borderTopWidth: 0, borderBottomWidth: 20}}
                     renderItem={({item}) => (
                         <ListItem
                             roundAvatar
