@@ -72,7 +72,7 @@ export class HomeScreen extends Component {
         }
 
         return (
-            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+            <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 10}}>
                 <FlatList
                     data={this.props.tasks}
                     renderItem={({item}) => (
