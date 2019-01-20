@@ -106,7 +106,7 @@ export class HomeScreen extends Component {
 
     handleDetails = (item) => {
         //ToastAndroid.showWithGravity(item.title + ", " + item.owner + ", " + item.reward, ToastAndroid.SHORT, ToastAndroid.CENTER);
-        this.props.navigation.navigate('Details', {task: item})
+        this.props.navigation.navigate('Details', {task: item, user: this.props.user.user})
     };
 
     handlePullRefresh = () => {
@@ -120,7 +120,8 @@ const mapProps = (state) => {
     return ({
         tasks: state.tasks.tasks,
         allTasks: state.tasks.allTasks,
-        loading: false
+        loading: false,
+        user: state.user,
     })
 };
 
