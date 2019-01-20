@@ -6,11 +6,12 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import tasks from './reducers/tasks/taskReducer';
 import userTasks from './reducers/tasks/userTasksReducer';
+import user from './reducers/auth/userReducer';
 import thunk from 'redux-thunk';
 import {combineReducers} from 'redux';
 import {crashReporter, loggingMiddleware} from "./middlewares/loggingMiddleware";
 
-const reducers = combineReducers({tasks, userTasks});
+const reducers = combineReducers({tasks, userTasks, user});
 
 const store = createStore(reducers, applyMiddleware(thunk, crashReporter, loggingMiddleware));
 

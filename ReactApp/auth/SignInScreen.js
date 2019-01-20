@@ -3,8 +3,12 @@ import {AsyncStorage, Button, ScrollView, StyleSheet,} from 'react-native';
 import t from "tcomb-form-native";
 import {Divider} from "react-native-elements";
 import styles from './SignInScreen.component.style'
+import getAllTasks from "../actions/getAllTasks";
+import updateTasksList from "../actions/updateTasksList";
+import fetchUser from "../actions/auth/fetchUser";
+import {connect} from "react-redux";
 
-export default class SignInScreen extends Component {
+export class SignInScreen extends Component {
     static navigationOptions = {
         title: 'Please sign in',
     };
@@ -36,6 +40,7 @@ export default class SignInScreen extends Component {
         let value = this._form.getValue();
         if(value){
             await AsyncStorage.setItem('userToken', value.user);
+            this.props.fetchUser(value.user);
             this.props.navigation.navigate('Main');
         }
     };
@@ -48,6 +53,12 @@ export default class SignInScreen extends Component {
         this.setState({value})
     };
 }
+
+const mapDispatchToProps = {
+    fetchUser,
+};
+
+export default connect(null, mapDispatchToProps)(SignInScreen)
 
 const Form = t.form.Form;
 

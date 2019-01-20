@@ -1,10 +1,11 @@
 import React from 'react';
 import {ActivityIndicator, AsyncStorage, Button, Dimensions, FlatList, View} from "react-native";
 import connect from "react-redux/es/connect/connect";
-import {List, ListItem, SearchBar} from "react-native-elements";
+import {List, ListItem, SearchBar, Text} from "react-native-elements";
 import PropTypes from "prop-types";
 import getAllTasksForUser from "../actions/getAllTasksForUser";
 import updateTasksListForUser from "../actions/updateTasksListForUser";
+import styles from './MyTasksScreen.component.style';
 
 export class MyTasksScreen extends React.Component {
 
@@ -16,7 +17,7 @@ export class MyTasksScreen extends React.Component {
         updateTasksList: PropTypes.func,
     };
 
-    static navigationOptions = ({navigation, defaultHandler}) => ({
+    static navigationOptions = ({navigation}) => ({
         headerRight: <Button title='Sign Out' onPress={() => navigation.state.params._signOutAsync()}/>,
         headerTitle: 'My Tasks',
     });
@@ -28,20 +29,8 @@ export class MyTasksScreen extends React.Component {
 
     componentDidMount() {
         this.props.navigation.setParams({_signOutAsync: this._signOutAsync});
-        this.retrieveUserInfo();
+        this.props.getAllTasksForUser(this.props.user.user);
     }
-
-    retrieveUserInfo = async () => {
-        try {
-            const value = await AsyncStorage.getItem('userToken');
-            if (value !== null) {
-                this.props.getAllTasksForUser(value);
-                this.setState({user: value})
-            }
-        } catch (error) {
-            console.log('Error on retrieving user token', error)
-        }
-    };
 
     render() {
         if (this.props.loading) {
@@ -53,27 +42,39 @@ export class MyTasksScreen extends React.Component {
         }
 
         return (
-            <List>
-                <FlatList
-                    data={this.props.tasks}
-                    renderItem={({item}) => (
-                        <ListItem
+            <View>
+                <Text style={styles.balanceLabel}>Balance: {this.props.user.balance}</Text>
+                <List
+                    automaticallyAdjustContentInsets={false}>
+                    <FlatList
+                        automaticallyAdjustContentInsets={false}
+                        data={this.props.tasks}
+                        contentContainerStyle={{paddingTop: 0, paddingBottom: 20, border: 1}}
+                        renderItem={({item}) => (
+                            <ListItem
+                                roundAvatar
+                                title={item.title}
+                                subtitle={item.owner}
+                                containerStyle={{borderBottomWidth: 0}}
+                                //onPress={() => this.handleDetails(item)}
+                                hideChevron={true}
+                            />
+                        )}
+                        keyExtractor={item => item.id.toString()}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        ListHeaderComponent={this.renderHeader}
+                        refreshing={this.props.loading}
+                        onRefresh={() => this.handlePullRefresh()}
+                        style={{minHeight: Dimensions.get('window').height}}
+                        ListEmptyComponent={<ListItem
                             roundAvatar
-                            title={item.title}
-                            subtitle={item.owner}
+                            title={'No tasks to display'}
                             containerStyle={{borderBottomWidth: 0}}
-                            //onPress={() => this.handleDetails(item)}
                             hideChevron={true}
-                        />
-                    )}
-                    keyExtractor={item => item.id.toString()}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    ListHeaderComponent={this.renderHeader}
-                    refreshing={this.props.loading}
-                    onRefresh={() => this.handlePullRefresh()}
-                    style={{minHeight: Dimensions.get('window').height}}
-                />
-            </List>
+                        />}
+                    />
+                </List>
+            </View>
         );
     }
 
@@ -119,7 +120,7 @@ export class MyTasksScreen extends React.Component {
     };
 
     handlePullRefresh = () => {
-        this.props.getAllTasksForUser(this.state.user);
+        this.props.getAllTasksForUser(this.props.user.user);
     }
 
 }
@@ -128,7 +129,11 @@ const mapProps = (state) => {
     return ({
         tasks: state.userTasks.tasks,
         allTasks: state.userTasks.allTasks,
-        loading: false
+        loading: false,
+        user: {
+            user: state.user.user,
+            balance: state.user.balance,
+        }
     })
 };
 

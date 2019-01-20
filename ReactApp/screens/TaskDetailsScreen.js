@@ -26,6 +26,8 @@ export default class MyTasksScreen extends React.Component {
                     <Text style={styles.infoBox}>Owner: {this.state.task.owner}</Text>
                     <Text style={styles.infoBox}>Description: {this.state.task.description}</Text>
                     <Text style={styles.infoBox}>Reward: {this.state.task.reward}</Text>
+                    <Text style={styles.infoBox}>Status: {this.state.task.progression.status}</Text>
+                    {this.addAssigneeIfExists()}
                     <MapView
                         liteMode
                         initialRegion={{
@@ -50,6 +52,12 @@ export default class MyTasksScreen extends React.Component {
                 <ActivityIndicator/>
             </View>
         )
+    }
+
+    addAssigneeIfExists = () => {
+        if(this.state.task.progression.status !== 'free'){
+            return <Text style={styles.infoBox}>Assignee: {this.state.task.progression.assignee}</Text>
+        }
     }
 }
 

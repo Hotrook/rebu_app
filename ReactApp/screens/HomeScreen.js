@@ -75,11 +75,12 @@ export class HomeScreen extends Component {
             <List >
                 <FlatList
                     data={this.props.tasks}
-                    contentContainerStyle={{borderTopWidth: 0, borderBottomWidth: 20}}
+                    contentContainerStyle={{borderTopWidth: 0, paddingBottom: 20}}
                     renderItem={({item}) => (
                         <ListItem
                             roundAvatar
                             title={item.title}
+                            rightTitle={item.progression.status}
                             subtitle={item.owner}
                             containerStyle={{borderBottomWidth: 0}}
                             onPress={() => this.handleDetails(item)}
@@ -92,6 +93,12 @@ export class HomeScreen extends Component {
                     refreshing={this.props.loading}
                     onRefresh={() => this.handlePullRefresh()}
                     style={{minHeight: Dimensions.get('window').height}}
+                    ListEmptyComponent={<ListItem
+                        roundAvatar
+                        title={'No tasks to display'}
+                        containerStyle={{borderBottomWidth: 0}}
+                        hideChevron={true}
+                    />}
                 />
             </List>
         );

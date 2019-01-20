@@ -9,6 +9,9 @@ import MapView from "react-native-maps";
 import {Marker} from 'react-native-maps';
 import {Location} from "expo";
 
+const Form = t.form.Form;
+let balance = 0;
+
 export class NewTaskScreen extends React.Component {
 
     constructor() {
@@ -46,6 +49,7 @@ export class NewTaskScreen extends React.Component {
     };
 
     render() {
+        balance = this.props.user.balance;
         if (this.state.hasLocationPermissions) {
             return (
                 <ScrollView style={styles.container}>
@@ -78,7 +82,7 @@ export class NewTaskScreen extends React.Component {
         event.preventDefault();
         let value = this._form.getValue();
         if (value) { // if validation fails, value will be null
-            this.retrieveUserInfo().then((user) => this.postNewTask(user, value));
+            this.postNewTask(this.props.user.user, value);
         }
     };
 
@@ -94,6 +98,9 @@ export class NewTaskScreen extends React.Component {
             latlng: {
                 latitude: this.state.markerCoords.latitude,
                 longitude: this.state.markerCoords.longitude
+            },
+            progression: {
+                status: 'free',
             }
         }, this.props.navigation);
         this.setState({
@@ -119,32 +126,31 @@ export class NewTaskScreen extends React.Component {
             />
         }
     };
-
-    retrieveUserInfo = async () => {
-        try {
-            const value = await AsyncStorage.getItem('userToken');
-            if (value !== null) {
-                return value;
-            }
-        } catch (error) {
-            console.log('Error on retrieving user token', error)
-        }
-        return 'User';
-    };
 }
+
+const mapProps = state => {
+    return ({
+        user: {
+            user: state.user.user,
+            balance: state.user.balance
+        }
+    })
+};
 
 const mapDispatchToProps = {
     createTask,
 };
 
-export default connect(null, mapDispatchToProps)(NewTaskScreen)
+export default connect(mapProps, mapDispatchToProps)(NewTaskScreen)
 
-const Form = t.form.Form;
+const Positive = t.refinement(t.Number, function (n) {
+    return n >= 0 && n <= balance;
+});
 
 const Task = t.struct({
     title: t.String,
     description: t.String,
-    reward: t.Number
+    reward: Positive,
 });
 
 const formStyles = {
@@ -186,8 +192,9 @@ const options = {
         },
         reward: {
             label: 'Reward',
-            error: 'Please set the reward for your task.'
+            error: 'Please set correct reward for your task.'
         }
     },
     stylesheet: formStyles,
 };
+
