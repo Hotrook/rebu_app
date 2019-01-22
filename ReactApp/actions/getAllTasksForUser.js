@@ -16,6 +16,6 @@ export default function getAllTasksForUser(user) {
         axios.get(`${HOST_IP}/tasks`, {params: {owner: user}})
             .then(response => response.data)
             .then(data => dispatch(fetchTasksSuccess(data)))
-            .catch(reason => console.log('getALlTasks action failed: ', reason))
+            .catch(reason => console.log('getAllTasksForUser action failed: ', reason))
     }
 };

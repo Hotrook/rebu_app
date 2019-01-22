@@ -6,6 +6,7 @@ import getAllTasks from "../actions/getAllTasks";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import updateTasksList from "../actions/updateTasksList";
+import showTask from "../actions/showTask";
 
 export class HomeScreen extends Component {
 
@@ -13,8 +14,6 @@ export class HomeScreen extends Component {
         tasks: PropTypes.array,
         allTasks: PropTypes.array,
         loading: PropTypes.bool,
-        getAllTasks: PropTypes.func,
-        updateTasksList: PropTypes.func,
     };
 
     static navigationOptions = {
@@ -106,7 +105,8 @@ export class HomeScreen extends Component {
 
     handleDetails = (item) => {
         //ToastAndroid.showWithGravity(item.title + ", " + item.owner + ", " + item.reward, ToastAndroid.SHORT, ToastAndroid.CENTER);
-        this.props.navigation.navigate('Details', {task: item, user: this.props.user.user})
+        this.props.showTask(item);
+        this.props.navigation.navigate('Details', {user: this.props.user.user})
     };
 
     handlePullRefresh = () => {
@@ -126,7 +126,7 @@ const mapProps = (state) => {
 };
 
 const mapDispatchToProps = {
-    getAllTasks, updateTasksList
+    getAllTasks, updateTasksList, showTask
 };
 
 export default connect(mapProps, mapDispatchToProps)(HomeScreen);

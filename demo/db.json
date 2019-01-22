@@ -6,9 +6,9 @@
       "owner": "User qwe",
       "reward": 10,
       "description": "",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "free"
+      },
       "latlng": {
         "latitude": 51.1131868,
         "longitude": 17.0753582
@@ -17,12 +17,13 @@
     {
       "id": 2,
       "title": "zadanie 2",
-      "owner": "User abc",
+      "owner": "Userabc",
       "reward": 20,
       "description": "",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "review",
+        "assignee": "User"
+      },
       "latlng": {
         "latitude": 50.8131868,
         "longitude": 16.9753582
@@ -34,9 +35,10 @@
       "owner": "Rere",
       "reward": 15,
       "description": "",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "done",
+        "assignee": "Ala"
+      },
       "latlng": {
         "latitude": 50.9131868,
         "longitude": 17.4753582
@@ -48,9 +50,9 @@
       "owner": "Test",
       "reward": 30,
       "description": "",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "free"
+      },
       "latlng": {
         "latitude": 51.0131868,
         "longitude": 17.3753582
@@ -61,9 +63,10 @@
       "title": "zadanie 5",
       "owner": "Ala",
       "reward": 1,
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "done",
+        "assignee": "Rere"
+      },
       "latlng": {
         "latitude": 51.3131868,
         "longitude": 17.2753582
@@ -75,9 +78,9 @@
       "owner": "User",
       "reward": 66,
       "description": "",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "free"
+      },
       "latlng": {
         "latitude": 51.2131868,
         "longitude": 17.1753582
@@ -89,9 +92,9 @@
       "owner": "User",
       "reward": 55,
       "description": "testowy opis",
-	  "progression": {
-		"status": "free"
-	  },
+      "progression": {
+        "status": "free"
+      },
       "latlng": {
         "latitude": 51.10958719024434,
         "longitude": 17.032895274460312
@@ -99,17 +102,17 @@
     }
   ],
   "users": [
-	{
-		"user": "Rere",
-		"balance": 200
-	},
-	{
-		"user": "User",
-		"balance": 200
-	},
-	{
-		"user": "Ala",
-		"balance": 200
-	}
+    {
+      "user": "Rere",
+      "balance": 200
+    },
+    {
+      "user": "User",
+      "balance": 200
+    },
+    {
+      "user": "Ala",
+      "balance": 200
+    }
   ]
 }
