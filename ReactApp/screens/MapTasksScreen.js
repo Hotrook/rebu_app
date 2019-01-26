@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Constants, Location, MapView} from 'expo';
-import {ActivityIndicator, Dimensions, StyleSheet, View} from "react-native";
-import {Text} from "react-native-elements";
+import {Location, MapView} from 'expo';
+import {ActivityIndicator, Dimensions, View} from "react-native";
+import {Icon, Text} from "react-native-elements";
+import styles from './MapTasksScreen.component.style'
+import showTask from "../actions/showTask";
 
 export class MapTasksScreen extends React.Component {
 
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             mapRegion: null,
             locationResult: null,
@@ -42,10 +44,9 @@ export class MapTasksScreen extends React.Component {
     };
 
     render() {
-        console.log("[MAPS UPDATE]", this.state);
         return (
             <View style={styles.container}>
-                {this.state.locationResult === null ?  <Text>Waiting for your localization...</Text>:
+                {this.state.locationResult === null ? <Text>Waiting for your localization...</Text> :
                     this.state.mapRegion === null ? <ActivityIndicator/> :
                         <MapView
                             style={{alignSelf: 'stretch', height: Dimensions.get('window').height}}
@@ -58,35 +59,40 @@ export class MapTasksScreen extends React.Component {
         )
     }
 
-    renderMarkers = (task, index) => {
+    renderMarkers = (task) => {
         return <MapView.Marker
-            key={index}
-            coordinate={task.latlng}
-            title={task.title}
-            description={task.owner}
-        />
+            key={task.id}
+            coordinate={task.latlng}>
+            <Icon name={'help'}/>
+            <MapView.Callout tooltip={true} onPress={() => this.onMarkerClicked(task)}>
+                <View style={styles.markerContainer}>
+                    <Text style={styles.markerTextTitle}>{task.title}</Text>
+                    <Text style={styles.markerTextOwner}>{task.owner}</Text>
+                </View>
+            </MapView.Callout>
+        </MapView.Marker>
     };
 
     handleMapRegionChange = mapRegion => {
         //this.setState({mapRegion}) this is laggy
+    };
+
+    onMarkerClicked = task => {
+        this.props.showTask(task);
+        this.props.navigation.navigate('Details', {user: this.props.user.user})
     }
 }
 
 const mapProps = (state) => {
     return ({
         tasks: state.tasks.tasks,
+        user: state.user,
     })
 };
 
-export default connect(mapProps, null)(MapTasksScreen);
+const mapDispatchToProps = {
+    showTask
+};
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: Constants.statusBarHeight,
-        backgroundColor: '#ecf0f1'
-    }
-});
+export default connect(mapProps, mapDispatchToProps)(MapTasksScreen);

@@ -57,7 +57,8 @@ MyTasksStack.navigationOptions = {
 };
 
 const MapTasksStack = createStackNavigator({
-   MapTasks: MapTasksScreen,
+    MapTasks: MapTasksScreen,
+    Details: TaskDetailsScreen,
 });
 
 MapTasksStack.navigationOptions = {
