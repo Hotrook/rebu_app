@@ -4,6 +4,6 @@ import SignInScreen from "./SignInScreen";
 import RegisterScreen from "./RegisterScreen";
 
 export default createStackNavigator({
-    SignIn: SignInScreen,
+    Auth: SignInScreen,
     Register: RegisterScreen,
 });

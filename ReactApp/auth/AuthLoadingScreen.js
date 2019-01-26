@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View,} from 'react-native';
 import fetchUser from "../actions/auth/fetchUser";
 import connect from "react-redux/es/connect/connect";
-import {SignInScreen} from "./SignInScreen";
+import {Permissions} from "expo";
 
 const styles = StyleSheet.create({
     container: {
@@ -20,6 +20,10 @@ export class AuthLoadingScreen extends Component {
 
     // Fetch the token from storage then navigate to our appropriate place
     _bootstrapAsync = async () => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            console.error('PERMISSSIONS not granted. App will not work properly.');
+        }
         const userToken = await AsyncStorage.getItem('userToken');
         console.log('[LOADING SCREEN]', userToken);
         // This will switch to the App screen or Auth screen and this loading

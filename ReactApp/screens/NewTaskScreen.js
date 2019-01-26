@@ -1,23 +1,20 @@
 import React from 'react';
-import {ScrollView, Text, TouchableHighlight, ActivityIndicator, View, AsyncStorage} from 'react-native';
+import {ActivityIndicator, ScrollView, Text, TouchableHighlight, View} from 'react-native';
 import t from 'tcomb-form-native';
 import styles from './NewTaskScreen.component.style.js'
 import createTask from "../actions/createTask";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import MapView from "react-native-maps";
-import {Marker} from 'react-native-maps';
-import {Location} from "expo";
+import {Location, MapView} from "expo";
 
 const Form = t.form.Form;
 let balance = 0;
 
 export class NewTaskScreen extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            hasLocationPermissions: false,
             mapRegion: null,
             markerCoords: null,
         }
@@ -44,13 +41,12 @@ export class NewTaskScreen extends React.Component {
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             },
-            hasLocationPermissions: true
         })
     };
 
     render() {
         balance = this.props.user.balance;
-        if (this.state.hasLocationPermissions) {
+        if (this.state.mapRegion !== null) {
             return (
                 <ScrollView style={styles.container}>
                     <Form type={Task}
@@ -72,7 +68,8 @@ export class NewTaskScreen extends React.Component {
         } else {
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator/>
+                    <Text>Waiting for your localization...</Text>
+                    <ActivityIndicator size={'large'}/>
                 </View>
             )
         }
@@ -102,7 +99,7 @@ export class NewTaskScreen extends React.Component {
             progression: {
                 status: 'free',
             }
-        }, this.props.navigation);
+        }, this.props.navigation, user);
         this.setState({
             value: null,
             markerCoords: null
@@ -121,7 +118,7 @@ export class NewTaskScreen extends React.Component {
 
     createMarkerIfExists = () => {
         if (this.state.markerCoords !== null) {
-            return <Marker
+            return <MapView.Marker
                 coordinate={this.state.markerCoords}
             />
         }

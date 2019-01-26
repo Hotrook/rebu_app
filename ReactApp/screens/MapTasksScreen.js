@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Constants, MapView, Location, Permissions} from 'expo';
-import {ActivityIndicator, View, StyleSheet, Dimensions} from "react-native";
+import {Constants, Location, MapView} from 'expo';
+import {ActivityIndicator, Dimensions, StyleSheet, View} from "react-native";
 import {Text} from "react-native-elements";
-import {Marker} from 'react-native-maps';
 
 export class MapTasksScreen extends React.Component {
 
@@ -13,7 +12,6 @@ export class MapTasksScreen extends React.Component {
         super();
         this.state = {
             mapRegion: null,
-            hasLocationPermissions: false,
             locationResult: null,
         }
     }
@@ -31,13 +29,6 @@ export class MapTasksScreen extends React.Component {
     }
 
     getLocationAsync = async () => {
-        let {status} = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            this.setState({locationResult: 'Permission not granted'});
-        } else {
-            this.setState({hasLocationPermissions: true});
-        }
-
         let location = await Location.getCurrentPositionAsync({});
         this.setState({
             locationResult: JSON.stringify(location),
@@ -54,22 +45,21 @@ export class MapTasksScreen extends React.Component {
         console.log("[MAPS UPDATE]", this.state);
         return (
             <View style={styles.container}>
-                {this.state.locationResult === null ? <ActivityIndicator/> :
-                    this.state.hasLocationPermissions === false ? <Text>Location not granted</Text> :
-                        this.state.mapRegion === null ? <Text>Map region doesn't exists</Text> :
-                            <MapView
-                                style={{alignSelf: 'stretch', height: Dimensions.get('window').height}}
-                                region={this.state.mapRegion}
-                                onRegionChange={this.handleMapRegionChange}>
-                                {this.props.tasks.map(this.renderMarkers)}
-                            </MapView>
+                {this.state.locationResult === null ?  <Text>Waiting for your localization...</Text>:
+                    this.state.mapRegion === null ? <ActivityIndicator/> :
+                        <MapView
+                            style={{alignSelf: 'stretch', height: Dimensions.get('window').height}}
+                            region={this.state.mapRegion}
+                            onRegionChange={this.handleMapRegionChange}>
+                            {this.props.tasks.map(this.renderMarkers)}
+                        </MapView>
                 }
             </View>
         )
     }
 
     renderMarkers = (task, index) => {
-        return <Marker
+        return <MapView.Marker
             key={index}
             coordinate={task.latlng}
             title={task.title}

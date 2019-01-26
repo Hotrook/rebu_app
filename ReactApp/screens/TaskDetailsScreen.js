@@ -1,13 +1,13 @@
 import React from 'react';
 import {Button, Text} from "react-native-elements";
 import {ActivityIndicator, ScrollView, View} from "react-native";
-import MapView, {Marker} from "react-native-maps";
 import styles from './TaskDetailsScreen.component.style';
 import {connect} from "react-redux";
 import completeTask from "../actions/completeTask";
 import assignTask from "../actions/assignTask";
 import requestCompletion from "../actions/requestTaskCompletion";
 import rejectCompletion from "../actions/rejectCompletion";
+import {MapView} from "expo";
 
 export class TaskDetailsScreen extends React.Component {
 
@@ -50,7 +50,7 @@ export class TaskDetailsScreen extends React.Component {
                             loadingEnabled
                             loadingIndicatorColor="#666666"
                             loadingBackgroundColor="#eeeeee">
-                            <Marker
+                            <MapView.Marker
                                 coordinate={this.props.task.latlng}
                             />
                         </MapView>

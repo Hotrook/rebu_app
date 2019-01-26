@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Button, ScrollView, StyleSheet,} from 'react-native';
+import {AsyncStorage, Button, ScrollView,} from 'react-native';
 import t from "tcomb-form-native";
 import {Divider} from "react-native-elements";
 import styles from './SignInScreen.component.style'
-import getAllTasks from "../actions/getAllTasks";
-import updateTasksList from "../actions/updateTasksList";
 import fetchUser from "../actions/auth/fetchUser";
 import {connect} from "react-redux";
 
@@ -13,8 +11,8 @@ export class SignInScreen extends Component {
         title: 'Please sign in',
     };
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
         }
     }

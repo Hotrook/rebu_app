@@ -2,12 +2,19 @@ import React, {Component} from 'react';
 import {Button, ScrollView,} from 'react-native';
 import t from "tcomb-form-native";
 import styles from './RegisterScreen.component.style'
+import {connect} from "react-redux";
+import registerUser from "../actions/auth/registerUser";
 
-export default class RegisterScreen extends Component {
+export class RegisterScreen extends Component {
     static navigationOptions = {
         title: 'Create new account',
     };
 
+    constructor(props){
+        super(props);
+        this.state = {
+        }
+    }
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -26,7 +33,13 @@ export default class RegisterScreen extends Component {
         event.preventDefault();
         let value = this._form.getValue();
         if(value){
-            this.props.navigation.navigate('Auth');
+            this.props.registerUser({
+                id: Math.floor(Math.random() * 10000000),
+                user: value.user,
+                password: value.password,
+                email: value.email,
+                balance: 200,//this should be added by backend,
+            }, this.props.navigation);
         }
     };
 
@@ -34,6 +47,12 @@ export default class RegisterScreen extends Component {
         this.setState({value})
     };
 }
+
+const mapDispatchToProps = {
+    registerUser,
+};
+
+export default connect(null, mapDispatchToProps)(RegisterScreen)
 
 const Form = t.form.Form;
 
